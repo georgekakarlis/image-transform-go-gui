@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
@@ -54,7 +55,7 @@ func main() {
 
 			// Define output directory and output file path
 			outputDir := "/Users/georgekakarlis/Desktop/goodprojects"
-			outputFileName := filepath.Join(outputDir, "output.webp")
+			outputFileName := getUniqueFileName(outputDir, "output", ".webp")
 
 			// Create output file
 			outputFile, err := os.Create(outputFileName)
@@ -97,4 +98,19 @@ func main() {
 
 	// Show the window and run the application
 	w.ShowAndRun()
+}
+
+
+func getUniqueFileName(baseDir, baseName, extension string) string {
+	counter := 0
+	filename := filepath.Join(baseDir, baseName+extension)
+	// Keep checking and incrementing the counter until we find an unused filename
+	for {
+		_, err := os.Stat(filename)
+		if os.IsNotExist(err) {
+			return filename
+		}
+		counter++
+		filename = filepath.Join(baseDir, fmt.Sprintf("%s_%d%s", baseName, counter, extension))
+	}
 }
